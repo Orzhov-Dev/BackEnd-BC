@@ -2,13 +2,14 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Address;
 use App\Entity\Article;
 use App\Entity\Category;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-
+use Symfony\Component\Validator\Constraints\Date;
 
 class AppFixtures extends Fixture
 {
@@ -20,6 +21,25 @@ class AppFixtures extends Fixture
     }
     public function load(ObjectManager $manager)
     {
+        $userAddress = new Address();
+        $userAddress
+            ->setStreetNumber(10)
+            ->setStreetName('Rue du Moulin')
+            ->setZipcode('75001')
+            ->setCity('Paris')
+            ->setCountry('France');
+
+        $manager->persist($userAddress);
+
+        $userAddressEmployee = new Address();
+        $userAddressEmployee
+            ->setStreetNumber(14)
+            ->setStreetName('Rue des Lilas')
+            ->setZipcode('69001')
+            ->setCity('Lyon')
+            ->setCountry('France');
+
+        $manager->persist($userAddressEmployee);
 
         $user = new User();
         $user
@@ -27,16 +47,28 @@ class AppFixtures extends Fixture
             ->setPassword(
                 password: $this->hasher->hashPassword($user, "admin")
             )
-            ->setRoles(["ROLE_ADMIN"]);
+            ->setRoles(["ROLE_ADMIN"])
+            ->setGender('Queen')
+            ->setFirstname('Laetitia')
+            ->setLastname('Machin')
+            ->setBirthdate((new \DateTime())->setDate(1985,6,12))
+            ->setAddress($userAddress);
             //todo set autres colonnes
         $manager->persist($user);
+        
         $user = new User ();
         $user
                 ->setEmail("test@gmail.com")
                 ->setPassword(
                     password: $this->hasher->hashPassword($user, "test")
                 )
-                ->setRoles(["ROLE_EMPLOYEE"]);
+                ->setRoles(["ROLE_EMPLOYEE"])
+                ->setGender('Male')
+                ->setFirstname('Bertrand ')
+                ->setLastname('Machin')
+                ->setBirthdate((new \DateTime())->setDate(1955,9,18))
+                ->setAddress($userAddressEmployee);
+
         $manager->persist($user);
         // Création de catégories pour le pressing avec des prix
         $categoriesData = [
