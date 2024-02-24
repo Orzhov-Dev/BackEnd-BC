@@ -4,13 +4,40 @@ namespace App\DataFixtures;
 
 use App\Entity\Article;
 use App\Entity\Category;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+
 
 class AppFixtures extends Fixture
 {
+    public function __construct( 
+        private UserPasswordHasherInterface $hasher
+    )
+    {
+        
+    }
     public function load(ObjectManager $manager)
     {
+
+        $user = new User();
+        $user
+            ->setEmail("Greenwash@gmail.com")
+            ->setPassword(
+                password: $this->hasher->hashPassword($user, "admin")
+            )
+            ->setRoles(["ROLE_ADMIN"]);
+            //todo set autres colonnes
+        $manager->persist($user);
+        $user = new User ();
+        $user
+                ->setEmail("test@gmail.com")
+                ->setPassword(
+                    password: $this->hasher->hashPassword($user, "test")
+                )
+                ->setRoles(["ROLE_EMPLOYEE"]);
+        $manager->persist($user);
         // Création de catégories pour le pressing avec des prix
         $categoriesData = [
             ['name' => 'Nettoyage à sec', 'description' => 'Nettoyage des vêtements à sec', 'price' => 5],
