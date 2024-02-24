@@ -2,41 +2,37 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Article;
+use App\Entity\Order;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
-class ArticleCrudController extends AbstractCrudController
+class OrderCrudController extends AbstractCrudController
 {
-    use Trait\ReadOnlyTrait;
-
     public static function getEntityFqcn(): string
     {
-        return Article::class;
+        return Order::class;
     }
 
     
     public function configureFields(string $pageName): iterable
     {
-        $categoriesAssociationField = AssociationField::new('categories')
+        $articlesAssociationField = AssociationField::new('articles')
         ->autocomplete()
-        ->setLabel('Categories')
+        ->setLabel('Articles List')
         ->setFormTypeOptions([
             'required' => false,
             'attr' => ['class' => 'select2'],
         ]);
+
         return [
             IdField::new('id'),
-            TextField::new('name'),
-            TextField::new('description'),
-            NumberField::new('price'),
-            TextField::new('state'),
-            $categoriesAssociationField
-
+            TextField::new('status'),
+            $articlesAssociationField,
+            MoneyField::new('totalPaid')->setCurrency('EUR'),
         ];
     }
     
