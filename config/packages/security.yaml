@@ -13,9 +13,22 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+        api:
+            pattern: ^/api/
+            stateless: true
+            provider: app_user_provider
+            jwt: ~
         main:
             lazy: true
             provider: app_user_provider
+            json_login:
+                check_path: auth # The name in routes.yaml is enough for mapping
+                username_path: email
+                password_path: password
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+            
+
             custom_authenticator: App\Security\LoginAuthenticator
             logout:
                 path: app_logout
@@ -33,6 +46,11 @@ security:
     access_control:
         - { path: ^/admin, roles: [ROLE_ADMIN, ROLE_EMPLOYEE]}
         # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/$, roles: PUBLIC_ACCESS }
+        - { path: ^/api, roles: PUBLIC_ACCESS }
+        - { path: ^/api/articles, roles: ROLE_ADMIN }
+        - { path: ^/auth, roles: PUBLIC_ACCESS }
+        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
     security:
