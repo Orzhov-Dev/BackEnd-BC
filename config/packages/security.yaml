@@ -48,9 +48,10 @@ security:
         # - { path: ^/profile, roles: ROLE_USER }
         - { path: ^/$, roles: PUBLIC_ACCESS }
         - { path: ^/api, roles: PUBLIC_ACCESS }
-        - { path: ^/api/articles, roles: ROLE_ADMIN }
+        - { path: ^/api/articles, roles: PUBLIC_ACCESS }
+        - { path: ^/api/order, roles: ROLE_USER}
         - { path: ^/auth, roles: PUBLIC_ACCESS }
-        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
+        # - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
     security:
